@@ -36,7 +36,7 @@ jobs:
         uses: burnett01/rsync-deployments@4.0
         with:
           switches: -avzr --delete --exclude=".git" --exclude=".github"
-          path: ./dist/
+          path: ./.next/standalone/
           remote_path: /opt/html/ams-mng
           remote_host: 39.108.73.143
           remote_user: root
