@@ -1,0 +1,47 @@
+appId: com.wgit.asset-manage
+productName: 唯刚资产管理后台
+copyright: Copyright © 2025
+
+directories:
+  output: dist
+  buildResources: electron/resources
+
+files:
+  - electron/main.js
+  - electron/preload.js
+  - package.json
+  - .next/static/**/*
+  - public/**/*
+
+extraResources:
+  - from: .next/standalone
+    to: standalone
+    filter:
+      - "**/*"
+
+mac:
+  category: public.app-category.business
+  icon: electron/resources/icon.icns
+  target:
+    - target: dmg
+      arch:
+        - x64
+        - arm64
+
+win:
+  icon: electron/resources/icon.ico
+  target:
+    - target: nsis
+      arch:
+        - x64
+
+linux:
+  icon: electron/resources/icon.png
+  target:
+    - target: AppImage
+      arch:
+        - x64
+
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true

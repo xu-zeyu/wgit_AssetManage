@@ -1,0 +1,10 @@
+node_modules
+.next
+out
+dist
+electron/*.js
+.env*.local
+.DS_Store
+*.log
+.vercel
+*.tsbuildinfo
