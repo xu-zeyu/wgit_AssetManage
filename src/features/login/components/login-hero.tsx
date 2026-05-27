@@ -10,32 +10,11 @@ export function LoginHero() {
       <div className="space-y-4">
         <span className="inline-flex w-fit items-center gap-2 rounded-full border border-brand-200/70 bg-white/70 px-3 py-1 text-xs font-medium text-brand-600 shadow-sm backdrop-blur">
           <span className="size-1.5 rounded-full bg-brand-400" />
-          Asset intelligence cockpit
+          wgit ams
         </span>
-        <div className="space-y-3">
-          <h2 className="text-4xl font-semibold leading-tight tracking-tight text-foreground">
-            让资产流转、审核与盘点
-            <br />
-            在一张可视化画布上完成
-          </h2>
-          <p className="max-w-xl text-sm leading-7 text-muted-foreground">
-            唯刚资产管理用更轻的卡片、更柔和的层次和更清晰的公司视角，
-            取代传统 ERP 的高密度表格体验。
-          </p>
-        </div>
       </div>
 
       <div className="overflow-hidden rounded-[32px] border border-white/70 bg-white/65 p-6 shadow-md backdrop-blur-xl">
-        <div className="flex items-center justify-between">
-          <div>
-            <div className="text-sm font-medium text-foreground/80">多公司资产协同</div>
-            <div className="mt-1 text-xs text-muted-foreground">动态总览 · 审核流 · 办公区域</div>
-          </div>
-          <div className="rounded-2xl bg-brand-50 px-3 py-1 text-xs font-medium text-brand-600">
-            Live SVG
-          </div>
-        </div>
-
         <div className="mt-6 rounded-[28px] border border-brand-100/80 bg-[linear-gradient(135deg,rgba(255,248,235,0.96),rgba(255,255,255,0.9))] p-4">
           <svg viewBox="0 0 720 420" className="h-auto w-full" role="img" aria-label="资产管理动态示意图">
             <defs>
@@ -141,15 +120,6 @@ export function LoginHero() {
               />
             </circle>
           </svg>
-        </div>
-
-        <div className="mt-5 grid grid-cols-3 gap-3">
-          {METRICS.map(metric => (
-            <div key={metric.label} className="rounded-2xl border border-brand-100/70 bg-white/85 p-3">
-              <div className="text-[11px] text-muted-foreground">{metric.label}</div>
-              <div className="mt-1 text-xl font-semibold text-foreground">{metric.value}</div>
-            </div>
-          ))}
         </div>
       </div>
     </section>

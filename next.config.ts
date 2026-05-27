@@ -14,6 +14,7 @@ const useProxy = baseUrl.startsWith('/')
 const config: NextConfig = {
   output: 'standalone',
   reactStrictMode: true,
+  compress: true,
   images: {
     remotePatterns: [
       { protocol: 'https', hostname: '**' },

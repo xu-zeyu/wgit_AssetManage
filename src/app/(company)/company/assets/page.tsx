@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import Image from 'next/image'
-import { Box, Eye } from 'lucide-react'
+import { Box, Eye, LogOut } from 'lucide-react'
 import { PageHeader } from '@/components/common/page-header'
 import { SearchBar } from '@/components/common/search-bar'
 import { Pagination } from '@/components/common/pagination'
@@ -17,6 +17,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { StatusBadge } from '@/components/common/status-badge'
 import { useCompanyAssets } from '@/features/company/assets/hooks/use-company-assets'
 import { CompanyAssetDetailSheet } from '@/features/company/assets/components/company-asset-detail-sheet'
+import { ReturnAssetDialog } from '@/features/company/assets/components/return-asset-dialog'
 import {
   COMPANY_ASSET_STATUS,
   type CompanyAsset,
@@ -30,13 +31,14 @@ const STATUS_TONE: Record<CompanyAssetStatus, 'warning' | 'success' | 'secondary
 }
 
 export default function CompanyAssetsPage() {
-  const { filters, setFilters, reset, list } = useCompanyAssets()
+  const { filters, setFilters, reset, list, returnAssets } = useCompanyAssets()
   const [draft, setDraft] = useState({
     status: filters.status as string | undefined,
     skuCategory: filters.skuCategory ?? '',
     areaName: filters.areaName ?? '',
   })
   const [detail, setDetail] = useState<CompanyAsset | null>(null)
+  const [returnTarget, setReturnTarget] = useState<CompanyAsset | null>(null)
 
   const data = list.data?.data
   const items = data?.content ?? []
@@ -143,7 +145,18 @@ export default function CompanyAssetsPage() {
                   <Row label="部门" value={a.rentalUserDepartment || '-'} />
                   <Row label="区域" value={a.rentalUserRentalUserAreaName || '-'} />
                 </div>
-                <div className="flex items-center justify-end border-t pt-2" onClick={e => e.stopPropagation()}>
+                <div className="flex items-center justify-end gap-1 border-t pt-2" onClick={e => e.stopPropagation()}>
+                  {(a.status !== 'RETURNED' && a.rentalOrderStatus === 'RENTING' ) && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="text-destructive hover:text-destructive"
+                      onClick={() => setReturnTarget(a)}
+                    >
+                      <LogOut className="size-4" />
+                      退租
+                    </Button>
+                  )}
                   <Button variant="ghost" size="sm" className="-mr-2" onClick={() => setDetail(a)}>
                     <Eye className="size-4" />
                     详情
@@ -167,6 +180,17 @@ export default function CompanyAssetsPage() {
         data={detail}
         open={detail !== null}
         onOpenChange={v => !v && setDetail(null)}
+      />
+
+      <ReturnAssetDialog
+        open={returnTarget !== null}
+        onOpenChange={v => !v && setReturnTarget(null)}
+        assetName={returnTarget?.assetAssetSkuName}
+        onSubmit={async reason => {
+          if (!returnTarget) return
+          await returnAssets.mutateAsync({ ids: [returnTarget.id], reason })
+          setReturnTarget(null)
+        }}
       />
     </div>
   )

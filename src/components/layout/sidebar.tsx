@@ -11,6 +11,8 @@ import { useBadgeStore } from '@/stores/use-badge-store'
 import { navForRole } from '@/permissions/nav-config'
 import type { AppRole } from '@/permissions/roles'
 import { CompanySwitcher } from './company-switcher'
+import { ThemeSwitcher } from './theme-switcher'
+import { ThemeColorSwitcher } from './theme-color-switcher'
 import { cn } from '@/lib/utils'
 
 interface Props {
@@ -88,7 +90,13 @@ export function Sidebar({ role, onNavigate }: Props) {
           ))}
         </nav>
       </ScrollArea>
-      <div className="px-4 py-4 text-xs text-muted-foreground">
+      <Separator />
+      <div className="space-y-3 px-4 py-3">
+        <ThemeColorSwitcher />
+        <ThemeSwitcher />
+      </div>
+      <Separator />
+      <div className="px-4 py-3 text-xs text-muted-foreground">
         © {new Date().getFullYear()} 唯刚资产管理
       </div>
     </div>

@@ -13,3 +13,7 @@ export function printCompanyAssets(ids: number[]): Promise<ApiResult<unknown>> {
 export function updateAssetRentalUser(id: number, rentalUserId: number): Promise<ApiResult<unknown>> {
   return request.post('/v1/ams/company-admin/assets/change-rental-user', { id, rentalUserId })
 }
+
+export function returnCompanyAssets(ids: number[], reason: string): Promise<ApiResult<unknown>> {
+  return request.post('/v1/ams/company-admin/assets/return', { ids, reason })
+}

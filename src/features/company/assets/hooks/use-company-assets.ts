@@ -1,9 +1,10 @@
 'use client'
 
 import { useState } from 'react'
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { toast } from 'sonner'
 import { useCurrentCompanyId } from '@/hooks/use-current-company-id'
-import { listCompanyAssets } from '../api/list-company-assets'
+import { listCompanyAssets, returnCompanyAssets } from '../api/list-company-assets'
 import type { CompanyAssetQuery, CompanyAssetStatus } from '../api/types'
 
 interface Filters {
@@ -18,6 +19,7 @@ const initial: Filters = { page: 1, pageSize: 12 }
 
 export function useCompanyAssets() {
   const currentCompanyId = useCurrentCompanyId()
+  const queryClient = useQueryClient()
   const [filters, setFilters] = useState<Filters>(initial)
 
   const list = useQuery({
@@ -33,5 +35,14 @@ export function useCompanyAssets() {
       } satisfies CompanyAssetQuery),
   })
 
-  return { filters, setFilters, reset: () => setFilters(initial), list }
+  const returnAssets = useMutation({
+    mutationFn: ({ ids, reason }: { ids: number[]; reason: string }) =>
+      returnCompanyAssets(ids, reason),
+    onSuccess: () => {
+      toast.success('退租成功')
+      queryClient.invalidateQueries({ queryKey: ['company-assets'] })
+    },
+  })
+
+  return { filters, setFilters, reset: () => setFilters(initial), list, returnAssets }
 }

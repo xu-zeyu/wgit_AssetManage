@@ -1,5 +1,5 @@
 export type CompanyAssetStatus = 'PREPARING' | 'USING' | 'RETURNED'
-export type CompanyAssetRentalStatus = 'PENDING_DEPLOY' | 'PENDING_RECEIVE' | 'COMPLETED' | 'CANCELLED'
+export type CompanyAssetRentalStatus = 'PENDING_DEPLOY' | 'PENDING_RECEIVE' | 'COMPLETED' | 'CANCELLED' | 'RENTING' | 'REPAIR_APPLYING' | 'RETURN_APPLYING' | 'RETURNED'
 
 export interface CompanyAsset {
   id: number
