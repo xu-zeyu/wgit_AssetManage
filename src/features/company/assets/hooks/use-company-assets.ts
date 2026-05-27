@@ -15,7 +15,7 @@ interface Filters {
   pageSize: number
 }
 
-const initial: Filters = { page: 1, pageSize: 12 }
+const initial: Filters = { page: 1, pageSize: 10 }
 
 export function useCompanyAssets() {
   const currentCompanyId = useCurrentCompanyId()

@@ -12,7 +12,7 @@ import {
 } from '../api/office-areas-api'
 import type { CreateOfficeAreaRequest, UpdateOfficeAreaRequest } from '../api/types'
 
-const initial = { page: 1, pageSize: 12 }
+const initial = { page: 1, pageSize: 10 }
 
 export function useOfficeAreas() {
   const currentCompanyId = useCurrentCompanyId()
