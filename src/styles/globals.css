@@ -83,6 +83,83 @@
 }
 
 @layer base {
+  /* 主题色板 —— amber 沿用 :root / .dark 默认，无需重写 */
+
+  [data-theme-color='ocean'] {
+    --primary: 217 91% 55%;
+    --primary-foreground: 210 40% 98%;
+    --ring: 217 91% 55%;
+    --accent: 217 90% 95%;
+    --accent-foreground: 217 70% 25%;
+  }
+  .dark[data-theme-color='ocean'] {
+    --primary: 217 91% 65%;
+    --primary-foreground: 217 30% 12%;
+    --ring: 217 91% 65%;
+    --accent: 217 25% 22%;
+    --accent-foreground: 210 40% 96%;
+  }
+
+  [data-theme-color='mint'] {
+    --primary: 158 72% 40%;
+    --primary-foreground: 150 40% 98%;
+    --ring: 158 72% 40%;
+    --accent: 158 70% 94%;
+    --accent-foreground: 158 65% 22%;
+  }
+  .dark[data-theme-color='mint'] {
+    --primary: 158 64% 52%;
+    --primary-foreground: 158 35% 10%;
+    --ring: 158 64% 52%;
+    --accent: 158 25% 20%;
+    --accent-foreground: 150 40% 96%;
+  }
+
+  [data-theme-color='violet'] {
+    --primary: 262 75% 58%;
+    --primary-foreground: 270 40% 98%;
+    --ring: 262 75% 58%;
+    --accent: 262 80% 95%;
+    --accent-foreground: 262 60% 28%;
+  }
+  .dark[data-theme-color='violet'] {
+    --primary: 262 70% 68%;
+    --primary-foreground: 262 30% 12%;
+    --ring: 262 70% 68%;
+    --accent: 262 25% 22%;
+    --accent-foreground: 270 40% 96%;
+  }
+
+  [data-theme-color='rose'] {
+    --primary: 346 80% 56%;
+    --primary-foreground: 350 40% 98%;
+    --ring: 346 80% 56%;
+    --accent: 346 80% 95%;
+    --accent-foreground: 346 60% 26%;
+  }
+  .dark[data-theme-color='rose'] {
+    --primary: 346 75% 66%;
+    --primary-foreground: 346 30% 12%;
+    --ring: 346 75% 66%;
+    --accent: 346 25% 22%;
+    --accent-foreground: 350 40% 96%;
+  }
+
+  [data-theme-color='graphite'] {
+    --primary: 220 14% 36%;
+    --primary-foreground: 220 20% 98%;
+    --ring: 220 14% 36%;
+    --accent: 220 16% 94%;
+    --accent-foreground: 220 20% 20%;
+  }
+  .dark[data-theme-color='graphite'] {
+    --primary: 220 10% 70%;
+    --primary-foreground: 220 20% 12%;
+    --ring: 220 10% 70%;
+    --accent: 220 8% 22%;
+    --accent-foreground: 220 20% 96%;
+  }
+
   * {
     @apply border-border;
   }
