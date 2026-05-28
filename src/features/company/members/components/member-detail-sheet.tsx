@@ -1,5 +1,6 @@
 'use client'
 
+import { Button } from '@/components/ui/button'
 import { Building2, MapPin, Phone, UserCircle2 } from 'lucide-react'
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/components/ui/sheet'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
@@ -10,9 +11,11 @@ interface Props {
   data: CompanyMember | null
   open: boolean
   onOpenChange: (v: boolean) => void
+  onEdit?: () => void
+  onDelete?: () => void
 }
 
-export function MemberDetailSheet({ data, open, onOpenChange }: Props) {
+export function MemberDetailSheet({ data, open, onOpenChange, onEdit, onDelete }: Props) {
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent className="w-full max-w-md overflow-y-auto sm:max-w-lg">
@@ -52,6 +55,34 @@ export function MemberDetailSheet({ data, open, onOpenChange }: Props) {
               <Row label="岗位" value={data.position ?? '-'} icon={<UserCircle2 className="size-3.5" />} />
               <Row label="办公区域" value={data.area?.name ?? '-'} icon={<MapPin className="size-3.5" />} />
             </Section>
+
+            {(onEdit || onDelete) && (
+              <div className="flex gap-2">
+                {onEdit && (
+                  <Button
+                    className="flex-1"
+                    onClick={() => {
+                      onOpenChange(false)
+                      onEdit()
+                    }}
+                  >
+                    编辑成员
+                  </Button>
+                )}
+                {onDelete && (
+                  <Button
+                    variant="outline"
+                    className="flex-1 border-destructive/20 text-destructive hover:bg-destructive/5 hover:text-destructive"
+                    onClick={() => {
+                      onOpenChange(false)
+                      onDelete()
+                    }}
+                  >
+                    删除成员
+                  </Button>
+                )}
+              </div>
+            )}
           </div>
         )}
       </SheetContent>

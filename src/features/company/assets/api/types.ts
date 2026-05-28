@@ -4,6 +4,7 @@ export type CompanyAssetRentalStatus = 'PENDING_DEPLOY' | 'PENDING_RECEIVE' | 'C
 export interface CompanyAsset {
   id: number
   images: Array<{ id: number; url: string }>
+  printCount?: number
   remark: string
   status: CompanyAssetStatus
   assetId: number
@@ -19,6 +20,12 @@ export interface CompanyAsset {
   rentalUserRentalUserAreaName: string
 }
 
+export interface AssetSkuOption {
+  id: number
+  name: string
+  spec?: string
+}
+
 export interface CompanyAssetQuery {
   status?: CompanyAssetStatus
   skuCategory?: string
@@ -26,6 +33,25 @@ export interface CompanyAssetQuery {
   size: number
   page: number
   sort: string
+}
+
+export interface AssetSkuOptionQuery {
+  name?: string
+  page: number
+  size: number
+  sort: string
+}
+
+export interface ApplyCompanyAssetsRequest {
+  applyAssets: Array<{ assetSkuId: number; quantity: number }>
+  userIds: number[]
+}
+
+export interface ApplyCompanyAssetResult {
+  success: boolean
+  userId: number
+  auditRecordId?: number
+  reason?: string
 }
 
 export const COMPANY_ASSET_STATUS: Array<{ label: string; value: CompanyAssetStatus }> = [

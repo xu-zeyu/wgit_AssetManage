@@ -1,51 +1,90 @@
 'use client'
 
-import { useState } from 'react'
-import Image from 'next/image'
-import { Box, Eye, LogOut } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { Plus, Printer, X } from 'lucide-react'
+import { toast } from 'sonner'
 import { PageHeader } from '@/components/common/page-header'
 import { SearchBar } from '@/components/common/search-bar'
 import { Pagination } from '@/components/common/pagination'
-import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Empty } from '@/components/ui/empty'
 import { Skeleton } from '@/components/ui/skeleton'
-import { StatusBadge } from '@/components/common/status-badge'
 import { useCompanyAssets } from '@/features/company/assets/hooks/use-company-assets'
+import { printCompanyAssets } from '@/features/company/assets/api/list-company-assets'
+import { AssetApplicationDialog } from '@/features/company/assets/components/asset-application-dialog'
+import { CompanyAssetCard } from '@/features/company/assets/components/company-asset-card'
 import { CompanyAssetDetailSheet } from '@/features/company/assets/components/company-asset-detail-sheet'
 import { ReturnAssetDialog } from '@/features/company/assets/components/return-asset-dialog'
-import {
-  COMPANY_ASSET_STATUS,
-  type CompanyAsset,
-  type CompanyAssetStatus,
-} from '@/features/company/assets/api/types'
-
-const STATUS_TONE: Record<CompanyAssetStatus, 'warning' | 'success' | 'secondary'> = {
-  PREPARING: 'warning',
-  USING: 'success',
-  RETURNED: 'secondary',
-}
+import { printAssetLabels } from '@/features/company/assets/lib/print-asset-labels'
+import { COMPANY_ASSET_STATUS, type CompanyAsset, type CompanyAssetStatus } from '@/features/company/assets/api/types'
 
 export default function CompanyAssetsPage() {
-  const { filters, setFilters, reset, list, returnAssets } = useCompanyAssets()
+  const { filters, setFilters, reset, list, returnAssets, applyAssets } = useCompanyAssets()
   const [draft, setDraft] = useState({
     status: filters.status as string | undefined,
     skuCategory: filters.skuCategory ?? '',
     areaName: filters.areaName ?? '',
   })
+  const [applicationOpen, setApplicationOpen] = useState(false)
   const [detail, setDetail] = useState<CompanyAsset | null>(null)
   const [returnTarget, setReturnTarget] = useState<CompanyAsset | null>(null)
+  const [selectedIds, setSelectedIds] = useState<number[]>([])
 
   const data = list.data?.data
   const items = data?.content ?? []
+  const selectedAssets = items.filter(asset => selectedIds.includes(asset.id))
+
+  useEffect(() => {
+    const visibleIds = new Set((data?.content ?? []).map(asset => asset.id))
+    setSelectedIds(prev => prev.filter(id => visibleIds.has(id)))
+  }, [data?.content])
+
+  async function handlePrint(targets: CompanyAsset[]) {
+    if (targets.length === 0) return
+    try {
+      await printAssetLabels(targets)
+      await printCompanyAssets(targets.map(asset => asset.id))
+      await list.refetch()
+      toast.success(`已发起 ${targets.length} 张标签打印`)
+      setSelectedIds([])
+    } catch {
+      toast.error('打印失败，请稍后重试')
+    }
+  }
+
+  function toggleSelected(id: number) {
+    setSelectedIds(prev => (prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]))
+  }
 
   return (
     <div className="space-y-5 animate-fade-in">
-      <PageHeader title="资产列表" description="查看公司当前的资产分布与使用情况" />
+      <PageHeader
+        title="资产列表"
+        description="查看公司当前的资产分布与使用情况"
+        actions={
+          <>
+            {selectedIds.length > 0 && (
+              <>
+                <Button variant="secondary" onClick={() => handlePrint(selectedAssets)}>
+                  <Printer className="size-4" />
+                  打印已选 {selectedIds.length} 项
+                </Button>
+                <Button variant="ghost" onClick={() => setSelectedIds([])}>
+                  <X className="size-4" />
+                  清空选择
+                </Button>
+              </>
+            )}
+            <Button onClick={() => setApplicationOpen(true)}>
+              <Plus className="size-4" />
+              新增资产
+            </Button>
+          </>
+        }
+      />
 
       <SearchBar
         onSearch={() =>
@@ -108,62 +147,19 @@ export default function CompanyAssetsPage() {
           ))}
         </div>
       ) : items.length === 0 ? (
-        <Empty title="暂无资产" description="资产分配后会出现在这里" />
+        <Empty title="暂无资产" description="可通过新增资产发起申领，并在这里追踪资产分布" />
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {items.map(a => (
-            <Card
+            <CompanyAssetCard
               key={a.id}
-              className="group cursor-pointer overflow-hidden transition-shadow hover:shadow-md"
-              onClick={() => setDetail(a)}
-            >
-              <div className="relative aspect-[16/10] w-full overflow-hidden bg-muted">
-                {a.images?.[0]?.url ? (
-                  <Image src={a.images[0].url} alt={a.assetAssetSkuName} fill sizes="280px" className="object-cover" />
-                ) : (
-                  <div className="grid h-full w-full place-items-center text-muted-foreground">
-                    <Box className="size-7" />
-                  </div>
-                )}
-                <div className="absolute left-2 top-2">
-                  <StatusBadge
-                    label={COMPANY_ASSET_STATUS.find(s => s.value === a.status)?.label ?? a.status}
-                    tone={STATUS_TONE[a.status]}
-                  />
-                </div>
-              </div>
-              <CardContent className="space-y-2 p-4 text-sm">
-                <div className="flex items-start justify-between gap-2">
-                  <div className="min-w-0">
-                    <div className="line-clamp-1 font-semibold">{a.assetAssetSkuName}</div>
-                    <div className="line-clamp-1 text-xs text-muted-foreground">{a.assetAssetSkuSpec || '-'}</div>
-                  </div>
-                  <Badge variant="muted">{a.assetCode}</Badge>
-                </div>
-                <div className="space-y-1 text-xs text-muted-foreground">
-                  <Row label="使用者" value={a.rentalUserName || '-'} />
-                  <Row label="部门" value={a.rentalUserDepartment || '-'} />
-                  <Row label="区域" value={a.rentalUserRentalUserAreaName || '-'} />
-                </div>
-                <div className="flex items-center justify-end gap-1 border-t pt-2" onClick={e => e.stopPropagation()}>
-                  {(a.status !== 'RETURNED' && a.rentalOrderStatus === 'RENTING' ) && (
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="text-destructive hover:text-destructive"
-                      onClick={() => setReturnTarget(a)}
-                    >
-                      <LogOut className="size-4" />
-                      退租
-                    </Button>
-                  )}
-                  <Button variant="ghost" size="sm" className="-mr-2" onClick={() => setDetail(a)}>
-                    <Eye className="size-4" />
-                    详情
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
+              asset={a}
+              selected={selectedIds.includes(a.id)}
+              onToggleSelected={() => toggleSelected(a.id)}
+              onDetail={() => setDetail(a)}
+              onReturn={() => setReturnTarget(a)}
+              onPrint={() => handlePrint([a])}
+            />
           ))}
         </div>
       )}
@@ -176,6 +172,14 @@ export default function CompanyAssetsPage() {
         onPageSizeChange={s => setFilters(f => ({ ...f, pageSize: s }))}
       />
 
+      <AssetApplicationDialog
+        open={applicationOpen}
+        onOpenChange={setApplicationOpen}
+        onSubmit={async payload => {
+          const response = await applyAssets.mutateAsync(payload)
+          return response.data
+        }}
+      />
       <CompanyAssetDetailSheet
         data={detail}
         open={detail !== null}
@@ -192,15 +196,6 @@ export default function CompanyAssetsPage() {
           setReturnTarget(null)
         }}
       />
-    </div>
-  )
-}
-
-function Row({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex justify-between gap-3">
-      <span className="text-muted-foreground/70">{label}</span>
-      <span className="line-clamp-1 max-w-[60%] text-right text-foreground/80">{value}</span>
     </div>
   )
 }
