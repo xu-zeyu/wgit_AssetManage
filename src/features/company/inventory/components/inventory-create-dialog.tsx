@@ -51,7 +51,7 @@ export function InventoryCreateDialog({ open, onOpenChange, onSubmit }: Props) {
         <div className="space-y-4">
           <div className="space-y-1.5">
             <Label>办公区域</Label>
-            <Select value={areaId ? String(areaId) : ''} onValueChange={v => setAreaId(Number(v))}>
+            <Select value={areaId ? String(areaId) : undefined} onValueChange={v => setAreaId(Number(v))}>
               <SelectTrigger>
                 <SelectValue placeholder={areas.isLoading ? '加载中...' : '请选择区域'} />
               </SelectTrigger>

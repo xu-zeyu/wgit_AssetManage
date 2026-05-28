@@ -28,7 +28,7 @@ export default function AdminAssetsPage() {
 
   const data = list.data?.data
   const items = data?.content ?? []
-  const allCategories = categories.data?.data ?? []
+  const allCategories = (categories.data?.data ?? []).filter(category => category.trim().length > 0)
 
   async function handleDelete(item: AssetSku) {
     const ok = await confirm({

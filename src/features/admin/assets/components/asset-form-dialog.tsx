@@ -43,6 +43,7 @@ export function AssetFormDialog({ open, onOpenChange, initial, onSubmit }: Props
     queryFn: () => listAssetSkuCategories(),
     enabled: open,
   })
+  const categoryOptions = (categories.data?.data ?? []).filter(category => category.trim().length > 0)
 
   useEffect(() => {
     if (!open) return
@@ -132,14 +133,14 @@ export function AssetFormDialog({ open, onOpenChange, initial, onSubmit }: Props
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>分类</FormLabel>
-                  <Select value={field.value ?? ''} onValueChange={field.onChange}>
+                  <Select value={field.value || undefined} onValueChange={field.onChange}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="选择分类" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {(categories.data?.data ?? []).map(c => (
+                      {categoryOptions.map(c => (
                         <SelectItem key={c} value={c}>
                           {c}
                         </SelectItem>

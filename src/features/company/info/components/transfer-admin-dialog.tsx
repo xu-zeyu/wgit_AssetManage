@@ -52,7 +52,7 @@ export function TransferAdminDialog({ open, onOpenChange, onSubmit }: Props) {
         </DialogHeader>
         <div className="space-y-2">
           <Label>新的管理员</Label>
-          <Select value={value ? String(value) : ''} onValueChange={v => setValue(Number(v))}>
+          <Select value={value ? String(value) : undefined} onValueChange={v => setValue(Number(v))}>
             <SelectTrigger>
               <SelectValue placeholder={users.isLoading ? '加载中...' : '请选择'} />
             </SelectTrigger>

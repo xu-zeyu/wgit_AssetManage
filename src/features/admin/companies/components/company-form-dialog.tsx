@@ -150,7 +150,7 @@ export function CompanyFormDialog({ open, onOpenChange, initial, onSubmit }: Pro
                 <FormItem>
                   <FormLabel>管理员</FormLabel>
                   <Select
-                    value={field.value ? String(field.value) : ''}
+                    value={field.value ? String(field.value) : undefined}
                     onValueChange={v => field.onChange(Number(v))}
                   >
                     <FormControl>
@@ -177,7 +177,7 @@ export function CompanyFormDialog({ open, onOpenChange, initial, onSubmit }: Pro
                 <FormItem>
                   <FormLabel>租金政策</FormLabel>
                   <Select
-                    value={field.value ? String(field.value) : ''}
+                    value={field.value ? String(field.value) : undefined}
                     onValueChange={v => field.onChange(Number(v))}
                   >
                     <FormControl>
